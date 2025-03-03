@@ -1,15 +1,21 @@
-const http = require('http');
-//import http from 'http'//
-const host = 'localhost';
-const port = 8000;
-const requestListener = (req, res) => {
-    res.writeHead(200);
-    //res.status = 200;//
-    res.end('Il mio primo server!');
-};
+import config from "./config/config.js";
+import express from "express";
+import connectDB from "./src/gataway/db.js";
+import dotenv from "dotenv";
+import setup from "./src/routes/activityRoutes.js";
 
-const server = http.createServer(requestListener);
+dotenv.config();
 
-server.listen(port, host, () => {
-    console.log(`Server running on http://${host}:${port}`);
-})
+const app = express();
+app.use(express.json());
+
+try {
+  await connectDB();
+  setup(app);
+  app.listen(config.port, config.host, () => {
+    console.log(`Server running on http://${config.host}:${config.port}`);
+  });
+} catch (error) {
+  console.log("Server not started", error.message);
+  process.exit();
+}
