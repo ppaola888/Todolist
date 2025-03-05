@@ -1,88 +1,50 @@
 import config from "../../config/config.js";
-import fs from "fs";
-import checkDb from "../utils/checkDb.js";
-import getReadlineInterface from "../utils/readLine.js";
-const dbFile = config.dbFile;
+import activitySchema from "../schema/todoListSchema.js";
+import Activity from "../models/Activity.js";
 
-const add = (data) => {
-  try {
-    fs.appendFileSync(dbFile, JSON.stringify(data) + "\n");
-    return data;
-  } catch (error) {
+const add = async (data) => {
+  const activity = await activitySchema.create(data).catch((error) => {
     console.error("Error on adding activity:", error.message);
     return null;
-  }
+  });
+  return new Activity(activity);
+  //return activity.toJSON({ flattenObjectIds: true, versionKey: false });
 };
 
-const getActivities = () => {
-  if (!checkDb()) {
+const getActivities = async () => {
+  const activities = await activitySchema.find().catch((error) => {
+    console.error("Error on getting activities:", error.message);
     return null;
-  }
-  const content = fs.readFileSync(dbFile);
-  const activities = content
-    .toString()
-    .trim()
-    .split("\n")
-    .map((item) => JSON.parse(item));
-  return activities;
+  });
+  return activities.map((activity) => new Activity(activity));
 };
 
 const getActivity = async (id) => {
-  if (!checkDb()) {
+  const activity = await activitySchema.findById(id).catch((error) => {
+    console.error("Error on getting activity:", error.message);
     return null;
-  }
-  try {
-    return await new Promise((resolve, reject) => {
-      const readlineInterface = getReadlineInterface();
-
-      readlineInterface.on("line", (line) => {
-        const activity = lineHandler(line, id, (activity) => {
-          resolve(activity);
-        });
-      });
-      readlineInterface.on("close", () => {
-        return reject(new Error("not found"));
-      });
-    });
-  } catch (e) {
-    console.error("Error reatriving activity:", e.message);
-    return null;
-  }
+  });
+  return new Activity(activity);
 };
 
 const updateActivity = async (id, data) => {
-  if (!checkDb()) {
-    return null;
-  }
-  try {
-    return await new Promise((resolve, reject) => {
-      const readlineInterface = getReadlineInterface();
-
-      const activities = [];
-      let updatedActivity;
-
-      readlineInterface.on("line", (line) => {
-        const activity = lineHandler(line, id, (activity) => {
-          Object.keys(data).forEach((key) => {
-            activity[key] = data[key];
-          });
-          return (updatedActivity = { ...activity });
-        });
-        activities.push(JSON.stringify(activity));
-      });
-      readlineInterface.on("close", () => {
-        fs.writeFile(dbFile, activities.join("\n"), (error) => {
-          if (error) {
-            reject(null);
-          }
-          resolve(updatedActivity);
-        });
-      });
+  const updatedActivity = await activitySchema
+    .findOneAndUpdate({ _id: id }, data, { upsert: false, new: true })
+    .catch((error) => {
+      console.error("Error on updating activity:", error.message);
+      return null;
     });
-  } catch (e) {
-    console.error("Error updating activity:", e.message);
-    return null;
-  }
+  return new Activity(updatedActivity);
 };
 
-export default { add, getActivities, getActivity, updateActivity };
+const remove = async (id) => {
+  const deletedActivity = await activitySchema
+    .findByIdAndDelete(id)
+    .catch((error) => {
+      console.error("Error on removing activity:", error.message);
+      return null;
+    });
+  return new Activity(deletedActivity);
+};
+
+export default { add, getActivities, getActivity, updateActivity, remove };

@@ -1,10 +1,10 @@
-import addActivity from "../services/activityService.js";
+import activityService from "../services/activityService.js";
 
 const addController = async (req, res) => {
   const data = req.body;
-  const activity = addActivity(data);
+  const activity = await activityService.addActivity(data);
   if (activity) {
-    res.status(201).json(activity);
+    res.status(201).json(activity.toJSON());
   } else {
     return res.status(500).json({ message: "Server error" });
   }

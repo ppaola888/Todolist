@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import config from "../../config/config.js"; // Import the configuration file
+import config from "../../config/config.js";
 
-//const db = process.env.MONGODB_URI;
+//const db = process.env.MONGODB_URI; || mongodb://${config.db.host}:${config.db.port}/${config.db.name}
 
 const connectDB = async () => {
   try {

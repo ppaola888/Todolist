@@ -1,4 +1,5 @@
 import addValidator from "../../src/validators/addValidator.js";
+import retrieveValidator from "../../src/validators/retrieveValidator.js";
 import updateValidator from "../../src/validators/updateValidator.js";
 import addController from "../../src/controllers/addController.js";
 import getManyController from "../../src/controllers/getManyController.js";
@@ -7,7 +8,7 @@ import updateController from "../../src/controllers/updateController.js";
 import deleteController from "../../src/controllers/deleteController.js";
 
 const setup = (app) => {
-  app.get("/:id", getController);
+  app.get("/:id", retrieveValidator, getController);
   app.get("/", getManyController);
   app.post("/", addValidator, addController);
   app.patch("/:id", updateValidator, updateController);

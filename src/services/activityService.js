@@ -1,36 +1,11 @@
-import config from "../../config/config.js";
-import fs from "fs";
-import checkDb from "../utils/checkDb.js";
-import getReadlineInterface from "../utils/readLine.js";
-import activityRepository from "../src/repository/activityRepository.js";
-const dbFile = config.dbFile;
+import activityRepository from "../repository/activityRepository.js";
 
-const createId = () => {
-  if (!checkDb()) {
-    fs.openSync(dbFile, "w");
-    //return 1;
-  }
-  const content = fs.readFileSync(dbFile);
-  const activities = content.toString().split("\n");
-
-  const last = activities[activities.length - 2];
-  if (last && last !== "") {
-    return JSON.parse(last).id + 1;
-  }
-  return 1;
+const addActivity = async (data) => {
+  return await activityRepository.add(data);
 };
 
-const addActivity = (data) => {
-  data.status = "open";
-  data.createdAt = new Date().getTime();
-  data.updatedAt = data.createdAt;
-  data.id = createId();
-
-  return activityRepository.add(data);
-};
-
-const getActivities = () => {
-  return activityRepository.getActivities();
+const getActivities = async () => {
+  return await activityRepository.getActivities();
 };
 
 const getActivity = async (id) => {
@@ -41,6 +16,10 @@ const updateActivity = async (id, data) => {
   return await activityRepository.updateActivity(id, data);
 };
 
+const remove = async (id) => {
+  return await activityRepository.remove(id);
+};
+
 const lineHandler = (line, id, cb) => {
   const activity = JSON.parse(line);
   if (activity.id == id) {
@@ -49,4 +28,10 @@ const lineHandler = (line, id, cb) => {
   return activity;
 };
 
-export default { addActivity, getActivities, getActivity, updateActivity };
+export default {
+  addActivity,
+  getActivities,
+  getActivity,
+  updateActivity,
+  remove,
+};

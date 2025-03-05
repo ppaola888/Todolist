@@ -1,7 +1,7 @@
 import activityService from "../services/activityService.js";
 
-const getMany = (req, res) => {
-  const activities = activityService.getActivities();
+const getMany = async (req, res) => {
+  const activities = await activityService.getActivities();
   if (activities) {
     res.status(200).json(activities);
   } else {

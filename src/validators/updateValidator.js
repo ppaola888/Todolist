@@ -14,7 +14,9 @@ export default [
   validator.params(
     Joi.object().keys({
       id: Joi.string()
-        .regex(/^(?!0+[1-9]+)\d+$/)
+        //.regex(/^(?!0+[1-9]+)\d+$/)
+        .hex()
+        .length(24)
         .required(),
     })
   ),
