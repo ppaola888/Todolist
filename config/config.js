@@ -1,3 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+//console.log("MAIL_USER:", process.env.MAIL_USER);
+//console.log("MAIL_PASSWORD:", process.env.MAIL_PASSWORD);
+
 const config = {
   dbFile: "activity.db",
   host: "localhost",
@@ -8,6 +14,16 @@ const config = {
     //host: "localhost",
     //port: 27017,
     //name: "todolist",
+  },
+  mailConfig: {
+    //service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASSWORD,
+    },
   },
 };
 

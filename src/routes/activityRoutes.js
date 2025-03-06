@@ -6,6 +6,9 @@ import getManyController from "../../src/controllers/getManyController.js";
 import getController from "../../src/controllers/getController.js";
 import updateController from "../../src/controllers/updateController.js";
 import deleteController from "../../src/controllers/deleteController.js";
+import registerUserValidator from "../validators/registerUserValidator.js";
+import registerController from "../controllers/registerController.js";
+import sendEmail from "../controllers/mailController.js";
 
 const setup = (app) => {
   app.get("/:id", retrieveValidator, getController);
@@ -13,6 +16,8 @@ const setup = (app) => {
   app.post("/", addValidator, addController);
   app.patch("/:id", updateValidator, updateController);
   app.delete("/:id", deleteController);
+  app.post("/user", registerUserValidator, registerController);
+  app.post("/send-email", sendEmail);
   app.use((error, req, res, next) => {
     if (error && error.error && error.error.isJoi) {
       res.status(400).json({

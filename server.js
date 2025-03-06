@@ -1,7 +1,7 @@
+import dotenv from "dotenv";
 import config from "./config/config.js";
 import express from "express";
 import connectDB from "./src/gataway/db.js";
-import dotenv from "dotenv";
 import setup from "./src/routes/activityRoutes.js";
 
 dotenv.config();
