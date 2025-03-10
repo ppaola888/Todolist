@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { createValidator } from "express-joi-validation";
+import Joi from 'joi';
+import { createValidator } from 'express-joi-validation';
 
 const validator = createValidator({ passError: true });
 

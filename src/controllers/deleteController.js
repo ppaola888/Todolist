@@ -1,25 +1,23 @@
-import activityService from "../services/activityService.js";
-
-//const remove = async (req, res) => {
-//  const activityId = req.params.id;
-//  const data = { status: "deleted" };
-//  const activity = await activityService.updateActivity(activityId, data);
-//  if (activity) {
-//    res.status(200).json(activity);
-//  } else {
-//    res.status(500).json({ message: "Server error" });
-//  }
-//};
+import activityService from '../services/activityService.js';
 
 const remove = async (req, res) => {
   const activityId = req.params.id;
-  const activity = await activityService.remove(activityId);
-
-  if (activity) {
-    res.status(200).json({ message: "Activity deleted successfully" });
-  } else {
-    res.status(404).json({ message: "Activity not found" });
+  try {
+    const activity = await activityService.deleteActivity(activityId, data);
+    res.status(200).json();
+  } catch (error) {
+    res.status(error.status).json({ message: error.message });
   }
 };
+
+//const remove = async (req, res) => {
+//  const activityId = req.params.id;
+//  try {
+//    const activity = await activityService.remove(activityId);
+//    res.status(200).json();
+//  } catch (error) {
+//    res.status(error.status).json({ message: error.message });
+//  }
+//};
 
 export default remove;

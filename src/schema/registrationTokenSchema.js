@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const tokenSchema = new mongoose.Schema(
   {
@@ -7,8 +7,9 @@ const tokenSchema = new mongoose.Schema(
   },
   {
     timestamps: {
-      createdAt: "created_at",
-      wrightConcern: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      writeConcern: {
         w: 1,
         wtimeout: 2000,
       },
@@ -16,6 +17,6 @@ const tokenSchema = new mongoose.Schema(
   }
 );
 
-tokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
+tokenSchema.index({ updated_at: 1 }, { expireAfterSeconds: 3600 });
 
-export default mongoose.model("RegistrationToken", tokenSchema);
+export default mongoose.model('RegistrationToken', tokenSchema);

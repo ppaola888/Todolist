@@ -1,4 +1,4 @@
-import activityRepository from "../repository/activityRepository.js";
+import activityRepository from '../repository/activityRepository.js';
 
 const addActivity = async (data) => {
   return await activityRepository.add(data);
@@ -13,19 +13,15 @@ const getActivity = async (id) => {
 };
 
 const updateActivity = async (id, data) => {
-  return await activityRepository.updateActivity(id, data);
-};
-
-const remove = async (id) => {
-  return await activityRepository.remove(id);
-};
-
-const lineHandler = (line, id, cb) => {
-  const activity = JSON.parse(line);
-  if (activity.id == id) {
-    return cb(activity);
+  const activity = await activityRepository.updateActivity(id, data);
+  if (!activity) {
+    throw new NotFoundException('Activity not found', 'activityRepository.updateActivity');
   }
   return activity;
+};
+
+const deleteActivity = async (id) => {
+  return await activityRepository.updateActivity(id, { status: 'deleted' });
 };
 
 export default {
@@ -33,5 +29,5 @@ export default {
   getActivities,
   getActivity,
   updateActivity,
-  remove,
+  deleteActivity,
 };

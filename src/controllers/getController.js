@@ -1,12 +1,15 @@
-import activityService from "../services/activityService.js";
+import activityService from '../services/activityService.js';
 
 const get = async (req, res) => {
   const id = req.params.id;
-  const activity = await activityService.getActivity(id);
-  if (activity) {
+  try {
+    const activity = await activityService.getActivity(id);
+    if (!activity) {
+      return res.status(404).json({ message: 'Activity not found' });
+    }
     res.status(200).json(activity.toJSON());
-  } else {
-    return res.status(404).json({ message: "no activity found" });
+  } catch (error) {
+    return res.status(error.status).json({ message: error.message });
   }
 };
 

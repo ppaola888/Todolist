@@ -1,12 +1,16 @@
-import userService from "../services/userService.js";
+import userService from '../services/userService.js';
 
 const register = async (req, res) => {
   const data = req.body;
-  const user = await userService.register(data);
-  if (user) {
-    res.status(201).json(user);
-  } else {
-    return res.status(500).json({ message: "Server error" });
+  try {
+    const user = await userService.register(data);
+    if (!user) {
+      throw new NotFoundException('User registration failed', 'registerController.register');
+      //return res.status(500).json({ error: 'Registration has failed' });
+    }
+    return res.status(201).json(user);
+  } catch (error) {
+    return res.status(error.status).json({ message: error.message });
   }
 };
 

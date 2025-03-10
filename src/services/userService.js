@@ -1,7 +1,9 @@
-import userRepository from "../repository/userRepository.js";
-import cryptoUtils from "../utils/cryptoUtils.js";
-import tokenRepository from "../repository/tokenRepository.js";
-import mailGateway from "../gataway/mailGateway.js";
+import userRepository from '../repository/userRepository.js';
+import cryptoUtils from '../utils/cryptoUtils.js';
+import tokenRepository from '../repository/tokenRepository.js';
+import mailGateway from '../gataway/mailGateway.js';
+import NotFoundException from '../exceptions/NotFoundException.js';
+import { userStatus } from '../const/constant.js';
 
 const register = async (data) => {
   const { password, salt } = await cryptoUtils.hashPassword(data.password);
@@ -11,8 +13,21 @@ const register = async (data) => {
   const registrationToken = cryptoUtils.generateUniqueCode(10);
   await tokenRepository.add(user._id, registrationToken);
 
-  mailGateway.sendRegistrationMail(user.email, registrationToken);
+  await mailGateway.sendRegistrationMail(user.email, registrationToken);
   return user;
 };
 
-export default { register };
+const activate = async (token) => {
+  const tokenData = await tokenRepository.get(token);
+  if (!tokenData) {
+    throw new NotFoundException('Token not found', 'userService.activate');
+  }
+  const user = await userRepository.activate(tokenData.userId);
+  if (!user) {
+    throw new NotFoundException('Activation failed', 'userService.activate');
+  }
+  console.log('User activated:', user);
+  return user;
+};
+
+export default { register, activate };
