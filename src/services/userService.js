@@ -4,6 +4,7 @@ import tokenRepository from '../repository/tokenRepository.js';
 import mailGateway from '../gataway/mailGateway.js';
 import NotFoundException from '../exceptions/NotFoundException.js';
 import { userStatus } from '../const/constant.js';
+import UnauthorizedException from '../exceptions/UnauthorizedException.js';
 
 const register = async (data) => {
   const { password, salt } = await cryptoUtils.hashPassword(data.password);
@@ -30,4 +31,13 @@ const activate = async (token) => {
   return user;
 };
 
-export default { register, activate };
+const login = async (email, password) => {
+  const user = await userRepository.getByEmail(email);
+  if (!user || user.status !== userStatus.ACTIVE || !cryptoUtils.comparePassword(password, user)) {
+    throw new UnauthorizedException('Unauthorized ', 'userService.login');
+  }
+  const { accessToken, refreshToken } = cryptoUtils.generateTokens(user);
+  return { user, accessToken, refreshToken };
+};
+
+export default { register, activate, login };

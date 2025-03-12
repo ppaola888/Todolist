@@ -1,2 +1,4 @@
 node_modules/
 .env
+todolistRS256.key
+todolistRS256-key.pub

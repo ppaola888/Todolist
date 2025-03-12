@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { status } from "../const/constant.js";
+import mongoose from 'mongoose';
+import { status } from '../const/constant.js';
 
 const todolistSchema = new mongoose.Schema(
   {
@@ -13,11 +13,15 @@ const todolistSchema = new mongoose.Schema(
       type: String,
       default: status.OPEN,
     },
+    userId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: {
-      createdAt: "created_at",
-      updatedAt: "updated_at",
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
       wrightConcern: {
         w: 1,
         wtimeout: 2000,
@@ -26,6 +30,6 @@ const todolistSchema = new mongoose.Schema(
   }
 );
 
-const activity = mongoose.model("Activity", todolistSchema);
+const activity = mongoose.model('Activity', todolistSchema);
 
 export default activity;

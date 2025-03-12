@@ -23,6 +23,8 @@ const config = {
       pass: process.env.MAIL_PASS,
     },
   },
+  accessTokenExpiration: 3600,
+  refreshTokenExpiration: 86400,
 };
 
 export default config;

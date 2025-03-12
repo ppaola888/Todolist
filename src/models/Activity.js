@@ -4,12 +4,14 @@ class Activity {
   #description;
   #dueDate;
   #status;
+  #userId;
   constructor(activity) {
     this.#id = activity._id.toString();
     this.#name = activity.name;
     this.#description = activity.description;
     this.#dueDate = activity.dueDate;
     this.#status = activity.status;
+    this.#userId = activity.userId;
   }
   get name() {
     return this.#name;
@@ -26,6 +28,9 @@ class Activity {
   get id() {
     return this.#id;
   }
+  get userId() {
+    return this.#userId;
+  }
   toJSON() {
     return {
       id: this.#id,
@@ -33,6 +38,7 @@ class Activity {
       description: this.#description,
       dueDate: this.#dueDate,
       status: this.#status,
+      userId: this.#userId,
     };
   }
 }

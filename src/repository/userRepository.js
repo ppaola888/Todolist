@@ -1,5 +1,6 @@
 import userSchema from '../schema/userSchema.js';
 import { userStatus } from '../const/constant.js';
+import MongoInternalException from '../exceptions/MongoInternalException.js';
 
 const add = async (data) => {
   const user = await userSchema.create(data).catch((error) => {
@@ -27,4 +28,10 @@ const activate = async (id) => {
   return user ? user.toJSON() : null;
 };
 
-export default { add, activate };
+const getByEmail = async (email) => {
+  return await userSchema.findOne({ email: email }).catch((error) => {
+    throw new MongoInternalException('Mongo internal error:', 'userRepository.getByEmail');
+  });
+};
+
+export default { add, activate, getByEmail };
