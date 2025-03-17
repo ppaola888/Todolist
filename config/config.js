@@ -15,12 +15,15 @@ const config = {
     //name: "todolist",
   },
   mailConfig: {
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
+    type: 'Basic',
+    basic: {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
     },
   },
   accessTokenExpiration: 3600,

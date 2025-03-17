@@ -4,7 +4,7 @@ import updateValidator from '../../src/validators/updateValidator.js';
 import activateValidator from '../validators/activateValidator.js';
 import loginUserValidator from '../validators/loginUserValidator.js';
 import addController from '../../src/controllers/addController.js';
-import getManyController from '../../src/controllers/getManyController.js';
+import { getMany, getActivitiesByCursor } from '../../src/controllers/getManyController.js';
 import getController from '../../src/controllers/getController.js';
 import updateController from '../../src/controllers/updateController.js';
 import deleteController from '../../src/controllers/deleteController.js';
@@ -13,10 +13,13 @@ import registerController from '../controllers/registerController.js';
 import activateController from '../controllers/activateController.js';
 import loginController from '../controllers/loginController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
+import cursorPagination from '../middleware/cursorPagination.js';
+import cursorValidator from '../validators/cursorValidator.js';
 
 const setup = (app) => {
+  app.get('/', authMiddleware, getMany);
+  app.get('/activities', authMiddleware, cursorValidator, cursorPagination, getActivitiesByCursor);
   app.get('/:id', authMiddleware, retrieveValidator, getController);
-  app.get('/', authMiddleware, getManyController);
   app.post('/', authMiddleware, addValidator, addController);
   app.patch('/:id', authMiddleware, updateValidator, updateController);
   app.delete('/:id', authMiddleware, deleteController);

@@ -15,10 +15,7 @@ const activate = async (id) => {
     .findOneAndUpdate(
       { _id: id, status: userStatus.PENDING },
       { status: userStatus.ACTIVE },
-      {
-        new: true,
-        upsert: false,
-      }
+      { new: true, upsert: false }
     )
     .catch((error) => {
       console.error('Error on updating user:', error.message);

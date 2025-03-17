@@ -4,8 +4,12 @@ const addActivity = async (data) => {
   return await activityRepository.add(data);
 };
 
-const getActivities = async (userId) => {
-  return await activityRepository.getActivities(userId);
+const getActivities = async (userId, skip, limit) => {
+  return await activityRepository.getActivities(userId, skip, limit);
+};
+
+const getActivitiesByCursor = async (userId, cursor, limit, direction) => {
+  return await activityRepository.getActivitiesByCursor(userId, cursor, limit, direction);
 };
 
 const getActivity = async (id, userId) => {
@@ -27,6 +31,7 @@ const deleteActivity = async (id, userId) => {
 export default {
   addActivity,
   getActivities,
+  getActivitiesByCursor,
   getActivity,
   updateActivity,
   deleteActivity,
