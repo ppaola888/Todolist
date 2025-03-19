@@ -9,9 +9,12 @@ import config from '../../config/config.js';
 
 class UserService {
   constructor() {
-    this.emailGateway = EmailGatewayFactory.build(config.mailConfig.type);
+    const emailGateway = EmailGatewayFactory.build(config.mailConfig.type);
+    console.log(emailGateway === this.emailGateway);
+    this.emailGateway = emailGateway;
   }
   async register(data) {
+    //this.emailGateway = EmailGatewayFactory.build(config.mailConfig.type);
     const { password, salt } = await cryptoUtils.hashPassword(data.password);
     data.password = password;
     data.salt = salt;

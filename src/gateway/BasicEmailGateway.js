@@ -2,10 +2,25 @@ import nodemailer from 'nodemailer';
 import config from '../../config/config.js';
 import EmailGateway from './EmailGateway.js';
 
+/* constructor() {
+        super();
+        
+        if(!BasicEmailGateway.instance){
+        console.log('new istance')
+            this.transport = mailer.createTransport(config.emailConfig.basic);
+            BasicEmailGateway.instance = this;
+        }
+            console.log('instance')
+        return BasicEmailGateway.instance; 
+    }*/
+
 class BasicEmailGateway extends EmailGateway {
+  #instance;
   constructor() {
     super();
     this.transport = nodemailer.createTransport(config.mailConfig.basic);
+    //this.#instance = this;
+    //return BasicEmailGateway.instance;
   }
   async sendRegistrationMail(email, token) {
     const confirmationLink = `http://localhost:8000/user/activate/${token}`;
@@ -25,7 +40,6 @@ class BasicEmailGateway extends EmailGateway {
         <p><a href="${confirmationLink}">${confirmationLink}</a></p>
       </div>
     `;
-
     return await this.send(email, subject, message, htmlMessage);
   }
 

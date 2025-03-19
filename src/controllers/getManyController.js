@@ -16,9 +16,9 @@ const getMany = async (req, res) => {
 
 const getActivitiesByCursor = async (req, res) => {
   try {
-    console.log('Cursor in controller:', req.pagination.cursor);
+    //console.log('Cursor in controller:', req.pagination.cursor);
     const userId = req.userId;
-    const { cursor, limit, direction } = req.pagination;
+    const { cursor, limit, direction } = req.query;
 
     const activitiesResult = await activityService.getActivitiesByCursor(userId, limit, cursor, direction);
 

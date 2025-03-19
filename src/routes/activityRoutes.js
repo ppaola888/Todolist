@@ -18,7 +18,7 @@ import cursorValidator from '../validators/cursorValidator.js';
 
 const setup = (app) => {
   app.get('/', authMiddleware, getMany);
-  app.get('/activities', authMiddleware, cursorValidator, cursorPagination, getActivitiesByCursor);
+  app.get('/activities', authMiddleware, cursorValidator, getActivitiesByCursor);
   app.get('/:id', authMiddleware, retrieveValidator, getController);
   app.post('/', authMiddleware, addValidator, addController);
   app.patch('/:id', authMiddleware, updateValidator, updateController);

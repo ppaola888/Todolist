@@ -1,6 +1,14 @@
 import EmailGateway from './EmailGateway.js';
 
 class FakeEmailGateway extends EmailGateway {
+  #instance;
+  constructor() {
+    super();
+    if (this.#instance) {
+      return this.#instance;
+    }
+    this.#instance = this;
+  }
   async sendRegistrationMail(email, token) {
     const confirmationLink = `http://localhost:8000/user/activate/${token}`;
     const subject = 'Registration Confirmation';

@@ -15,7 +15,7 @@ const config = {
     //name: "todolist",
   },
   mailConfig: {
-    type: 'Basic',
+    type: 'basic',
     basic: {
       host: 'smtp.gmail.com',
       port: 465,

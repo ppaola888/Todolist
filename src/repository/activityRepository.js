@@ -31,11 +31,11 @@ const getActivities = async (userId, skip, limit) => {
 const getActivitiesByCursor = async (userId, limit, cursor, direction) => {
   console.log('cursor in repository:', cursor);
 
-  if (typeof cursor !== 'string' || cursor.length !== 24) {
-    throw new Error('Cursor not valid.');
-  }
-  const order = direction === 'next' ? 1 : -1;
-  const parsedLimit = parseInt(limit, 10) || 10;
+  //if (typeof cursor !== 'string' || cursor.length !== 24) {
+  //throw new Error('Cursor not valid.');
+  //}
+  //const order = direction === 'next' ? 1 : -1;
+  //const parsedLimit = parseInt(limit, 10) || 10;
   const filter = { userId, status: { $ne: 'Deleted' } };
 
   let cursorQuery = {};
@@ -53,8 +53,8 @@ const getActivitiesByCursor = async (userId, limit, cursor, direction) => {
 
   const activitiesResult = await activitySchema
     .find(query)
-    .sort({ _id: order })
-    .limit(parsedLimit)
+    //.sort({ _id: order })
+    .limit(limit)
     .catch((error) => {
       throw new MongoInternalException(
         'Error on getting activities by cursor',
