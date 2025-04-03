@@ -4,13 +4,11 @@ const register = async (req, res) => {
   const data = req.body;
   try {
     const user = await userService.register(data);
-    if (!user) {
-      throw new NotFoundException('User registration failed', 'registerController.register');
-      //return res.status(500).json({ error: 'Registration has failed' });
-    }
-    return res.status(201).json(user);
+
+    return res.status(201).json({ message: 'Registrazione riuscita' });
   } catch (error) {
-    return res.status(error.status).json({ message: error.message });
+    console.error('Errore durante la registrazione:', error);
+    return res.status(500).json({ code: 'SERVER_ERROR', message: 'Error while registering user' });
   }
 };
 

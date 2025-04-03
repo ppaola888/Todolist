@@ -38,7 +38,7 @@ class CryptoUtils {
   }
 
   verifyJWT(token) {
-    const decoded = jwt.decode(token, process.env.JWT_PUBLIC_KEY, { algorithms: ['RS256'], ignoreExipration: false });
+    const decoded = jwt.decode(token, process.env.JWT_PUBLIC_KEY, { algorithms: ['RS256'], ignoreExpiration: false });
     return decoded;
   }
 }
