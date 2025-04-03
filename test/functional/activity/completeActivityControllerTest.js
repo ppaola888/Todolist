@@ -34,11 +34,10 @@ describe('Complete Activity Controller test', () => {
         .patch(route.replace(':id', activityId))
         .set('Authorization', `Bearer ${accessToken}`)
         .set('Content-Type', 'application/json')
-        .send({});
+        .send();
 
       expect(res).to.have.status(200);
       expect(res.body.status).to.equal(status.COMPLETED);
-      expect(res.body).to.have.property('id', activityId);
       expect(res.body.id).to.equal(activityId);
       expect(res.body.name).to.equal(newActivity.name);
       expect(res.body.description).to.equal(newActivity.description);
@@ -51,6 +50,24 @@ describe('Complete Activity Controller test', () => {
       expect(updatedActivity.name).to.equal(newActivity.name);
       expect(updatedActivity.description).to.equal(newActivity.description);
       expect(updatedActivity.dueDate.toISOString()).to.equal(newActivity.dueDate.toISOString());
+    });
+    it('should return 200 if activity is already completed', async () => {
+      const activity = await ActivityTestUtils.addTestActivity(testUser._id, status.COMPLETED);
+
+      const res = await request
+        .execute(app)
+        .patch(route.replace(':id', activityId))
+        .set('Authorization', `Bearer ${accessToken}`)
+        .set('Content-Type', 'application/json')
+        .send();
+
+      expect(res).to.have.status(200);
+      expect(res.body.status).to.equal(status.COMPLETED);
+      expect(res.body.id).to.equal(activityId);
+      expect(res.body.name).to.equal(newActivity.name);
+      expect(res.body.description).to.equal(newActivity.description);
+      expect(res.body.dueDate).to.equal(newActivity.dueDate.toISOString());
+      expect(res.body.userId).to.equal(newActivity.userId.toString());
     });
   });
   describe('PATCH/:id/complete fail', () => {
@@ -102,6 +119,7 @@ describe('Complete Activity Controller test', () => {
         .send();
 
       expect(res).to.have.status(404);
+      expect(res.body.message).eq('Activity not found or not updated');
     });
   });
   it('should return 404 if the activity status is deleted', async () => {
@@ -115,10 +133,12 @@ describe('Complete Activity Controller test', () => {
       .send();
 
     expect(res).to.have.status(404);
+    expect(res.body.message).eq('Activity not found or not updated');
   });
 
   it('should return 400 if activity ID is invalid', async () => {
     const invalidId = 'invalid_id';
+
     const res = await request
       .execute(app)
       .patch(route.replace(':id', invalidId))
