@@ -1,13 +1,11 @@
 import * as chai from 'chai';
-import chaiHttp from 'chai-http';
-import { request } from 'chai-http';
-import app from '../../../server.js';
 import { expect } from 'chai';
+import chaiHttp, { request } from 'chai-http';
 import mongoose from 'mongoose';
+import app from '../../../server.js';
+import { status } from '../../../src/const/constant.js';
 import cryptoUtils from '../../../src/utils/cryptoUtils.js';
 import ActivityTestUtils from '../../fixtures/Utils.js';
-import user from '../../../src/schema/userSchema.js';
-import { status } from '../../../src/const/constant.js';
 
 chai.use(chaiHttp);
 let testUser;
