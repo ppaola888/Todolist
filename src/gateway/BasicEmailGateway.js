@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import config from '../../config/config.js';
 import EmailGateway from './EmailGateway.js';
+import e from 'express';
 
 /* constructor() {
         super();
@@ -15,7 +16,6 @@ import EmailGateway from './EmailGateway.js';
     }*/
 
 class BasicEmailGateway extends EmailGateway {
-  #instance;
   constructor() {
     super();
     this.transport = nodemailer.createTransport(config.mailConfig.basic);
@@ -54,6 +54,7 @@ class BasicEmailGateway extends EmailGateway {
       });
     } catch (error) {
       console.error('Error sending email:', error);
+      throw error;
     }
   }
 }

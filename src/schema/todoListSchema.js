@@ -22,7 +22,7 @@ const todolistSchema = new mongoose.Schema(
     timestamps: {
       createdAt: 'created_at',
       updatedAt: 'updated_at',
-      wrightConcern: {
+      writeConcern: {
         w: 1,
         wtimeout: 2000,
       },
@@ -30,6 +30,6 @@ const todolistSchema = new mongoose.Schema(
   }
 );
 
-const activity = mongoose.model('Activity', todolistSchema);
+const Activity = mongoose.model('Activity', todolistSchema);
 
-export default activity;
+export default Activity;

@@ -120,7 +120,6 @@ describe('Register User Controller Test', () => {
     it('should return 500 if email user already exists', async () => {
       const testUser = await ActivityTestUtils.createTestUser(userStatus.ACTIVE);
       const res = await request.execute(app).post(route).send({ email: testUser.email, password: 'password123' });
-      console.log(res.body.message);
 
       expect(res).to.have.status(500);
       expect(res.body.message).eq('Error while registering user');

@@ -16,7 +16,7 @@ let activityId;
 let accessToken;
 let route = '/:id/reopen';
 
-describe.only('Reopen Activity Controller test', () => {
+describe('Reopen Activity Controller test', () => {
   beforeEach(async () => {
     testUser = await ActivityTestUtils.createTestUser();
     anotherUser = await ActivityTestUtils.createAnotherTestUser();

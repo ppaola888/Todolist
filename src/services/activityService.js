@@ -1,31 +1,39 @@
-import activityRepository from '../repository/activityRepository.js';
+import ActivityRepository from '../repository/activityRepository.js';
 
 const addActivity = async (data) => {
-  return await activityRepository.add(data);
+  return await ActivityRepository.add(data);
 };
 
-const getActivities = async (userId, skip, limit) => {
-  return await activityRepository.getActivities(userId, skip, limit);
+const getActivities = async (userId, skip, limit, status) => {
+  return await ActivityRepository.getActivities(userId, skip, limit, status);
 };
 
-const getActivitiesByCursor = async (userId, cursor, limit, direction) => {
-  return await activityRepository.getActivitiesByCursor(userId, cursor, limit, direction);
+const getActivitiesByCursor = async (userId, cursor, limit, direction, status) => {
+  return await ActivityRepository.getActivitiesByCursor(userId, cursor, limit, direction, status);
 };
 
 const getActivity = async (id, userId) => {
-  return await activityRepository.getActivity(id, userId);
+  return await ActivityRepository.getActivity(id, userId);
 };
 
-const updateActivity = async (id, data, userId) => {
-  const activity = await activityRepository.updateActivity(id, userId, data);
-  if (!activity) {
-    throw new NotFoundException('Activity not found', 'activityRepository.updateActivity');
-  }
-  return activity;
+const updateActivity = async (id, userId, data) => {
+  return await ActivityRepository.updateActivity(id, userId, data);
 };
 
 const deleteActivity = async (id, userId) => {
-  return await activityRepository.updateActivity(id, userId, { status: 'deleted' });
+  return await ActivityRepository.updateActivity(id, userId, { status: 'deleted' });
+};
+
+const completeActivity = async (id, userId) => {
+  return await ActivityRepository.completeActivity(id, userId);
+};
+
+const reopenActivity = async (id, userId) => {
+  return await ActivityRepository.reopenActivity(id, userId);
+};
+
+const archiveActivity = async (id, userId) => {
+  return await ActivityRepository.archiveActivity(id, userId);
 };
 
 export default {
@@ -35,4 +43,7 @@ export default {
   getActivity,
   updateActivity,
   deleteActivity,
+  completeActivity,
+  reopenActivity,
+  archiveActivity,
 };

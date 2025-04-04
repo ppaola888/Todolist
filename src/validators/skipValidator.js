@@ -7,8 +7,8 @@ const validator = createValidator({ passError: true });
 export default [
   validator.query(
     Joi.object().keys({
-      cursor: Joi.string().hex().length(24).allow(null, '').optional(),
-      limit: Joi.number().integer().default(10).optional(),
+      skip: Joi.number().integer().min(0).default(0).optional(),
+      limit: Joi.number().integer().min(1).default(10).optional(),
       direction: Joi.string().valid('next', 'prev').default('next').optional(),
       status: [
         Joi.array()

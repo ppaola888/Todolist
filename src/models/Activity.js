@@ -31,6 +31,11 @@ class Activity {
   get userId() {
     return this.#userId;
   }
+
+  set userId(userId) {
+    this.#userId = userId;
+  }
+
   toJSON() {
     return {
       id: this.#id,

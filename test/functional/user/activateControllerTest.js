@@ -34,6 +34,7 @@ describe('Activate User Controller Test', () => {
   it('should return 200 if user is already active', async () => {
     const testUser = await FixtureUtils.createTestUser(userStatus.ACTIVE);
     const activationToken = await FixtureUtils.addActivationToken(testUser._id);
+
     const res = await request.execute(app).get(route.replace(':token', activationToken.registrationToken)).send();
 
     expect(res).to.have.status(200);
@@ -41,6 +42,7 @@ describe('Activate User Controller Test', () => {
     expect(res.body).to.have.property('_id').eq(testUser._id.toString());
 
     const updatedUser = await FixtureUtils.getUserById(testUser._id);
+    console.log('Updated user:', updatedUser);
     expect(updatedUser).to.have.property('status', userStatus.ACTIVE);
     expect(res.body).to.have.property('_id').eq(testUser._id.toString());
     expect(updatedUser).to.have.property('email', testUser.email);

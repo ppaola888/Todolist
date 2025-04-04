@@ -1,11 +1,11 @@
 const cursorNormalizer = (activities) => {
-  console.log('Activities:', activities);
-
   const activitiesNormalized = activities.map((activity) => ({
     id: activity._id.toString(),
     name: activity.name,
     description: activity.description,
     status: activity.status,
+    dueDate: activity.dueDate,
+    userId: activity.userId,
   }));
 
   const nextCursor = activities.length > 0 ? activities[activities.length - 1]._id.toString() : null;

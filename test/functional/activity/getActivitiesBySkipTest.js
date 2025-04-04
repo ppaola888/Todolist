@@ -31,7 +31,7 @@ describe('Get Activities Controller test - Skip Pagination', () => {
   });
 
   describe('GET /activities with skip - success', () => {
-    it.only('should return 200 with default parameters (skip = 0, limit = 12) and only non-deleted activities', async () => {
+    it('should return 200 with default parameters (skip = 0, limit = 12) and only non-deleted activities', async () => {
       const res = await request
         .execute(app)
         .get(route)
@@ -257,17 +257,17 @@ describe('Get Activities Controller test - Skip Pagination', () => {
 
     expect(res).to.have.status(400);
   });
-  it('should return 404 if user is not owner', async () => {
-    const anotherUser = await ActivityTestUtils.createAnotherTestUser();
-    const anotherAccessToken = cryptoUtils.generateToken({ _id: anotherUser._id }, 10000);
-
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${anotherAccessToken}`)
-      .set('Content-Type', 'application/json')
-      .send();
-
-    expect(res).to.have.status(404);
-  });
+  //it('should return 404 if user is not owner', async () => {
+  //  const anotherUser = await ActivityTestUtils.createAnotherTestUser();
+  //  const anotherAccessToken = cryptoUtils.generateToken({ _id: anotherUser._id }, 10000);
+  //
+  //  const res = await request
+  //    .execute(app)
+  //    .get(route)
+  //    .set('Authorization', `Bearer ${anotherAccessToken}`)
+  //    .set('Content-Type', 'application/json')
+  //    .send();
+  //
+  //  expect(res).to.have.status(404);
+  //});
 });

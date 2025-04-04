@@ -9,7 +9,8 @@ const config = {
   host: 'localhost',
   port: 8000,
   db: {
-    connectionString: 'mongodb+srv://peruzzipaola84:RMgJ4uiib0gBF4x1@cluster0.eokvx.mongodb.net/todolist',
+    connectionString:
+      process.env.MONGODB_URI || 'mongodb+srv://peruzzipaola84:RMgJ4uiib0gBF4x1@cluster0.eokvx.mongodb.net/todolist',
     //host: "localhost",
     //port: 27017,
     //name: "todolist",

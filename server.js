@@ -19,3 +19,5 @@ try {
   console.log('Server not started', error.message);
   process.exit();
 }
+
+export default app;

@@ -38,7 +38,6 @@ const activate = async (id) => {
       { new: true, upsert: false }
     )
     .catch((error) => {
-      console.error('Error on updating user:', error.message);
       return null;
     });
 

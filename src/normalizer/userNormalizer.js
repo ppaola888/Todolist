@@ -24,6 +24,5 @@ const addTokens = (normalizer) => {
     };
   };
 };
-const decoratorNormalizer = addTokens(userNormalizer);
-const user = { _id: "123", email: "test@example.com" };
-console.log(decoratorNormalizer(user, "accessToken", "refreshToken")); */
+const userNormalizerWithTokens = addTokens(userNormalizer);
+console.log(userNormalizerWithTokens(user, "accessToken", "refreshToken")); */
