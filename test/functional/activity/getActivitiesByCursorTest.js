@@ -32,12 +32,7 @@ describe('Cursor Pagination Test', () => {
   });
   describe('GET/activities with cursor - success', () => {
     it('should return 200 with default parameters (direction = next, limit = 10) and only non-deleted activities', async () => {
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(200);
       expect(res.body).to.have.property('activities').that.is.an('array');
@@ -57,13 +52,7 @@ describe('Cursor Pagination Test', () => {
       });
     });
     it('should return activities filtered by status open', async () => {
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ status: status.OPEN, limit: 5 })
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ status: status.OPEN, limit: 5 }).send();
 
       expect(res).to.have.status(200);
       expect(res.body.activities).to.be.an('array').with.lengthOf(5);
@@ -74,13 +63,7 @@ describe('Cursor Pagination Test', () => {
       });
     });
     it('should return 200 and only the activities with status deleted', async () => {
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set(`Authorization`, `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ status: status.DELETED })
-        .send();
+      const res = await request.execute(app).get(route).set(`Authorization`, `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ status: status.DELETED }).send();
       expect(res).to.have.status(200);
       expect(res.body.activities).to.be.an('array').with.lengthOf(5);
 
@@ -113,13 +96,7 @@ describe('Cursor Pagination Test', () => {
       expect(completedActivities).length(5);
     });
     it('should return activities filtered by completed status', async () => {
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ status: status.COMPLETED })
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ status: status.COMPLETED }).send();
 
       expect(res).to.have.status(200);
       expect(res.body.activities).to.be.an('array').with.lengthOf(5);
@@ -133,13 +110,7 @@ describe('Cursor Pagination Test', () => {
       });
     });
     it('should return activities filtered by archived status', async () => {
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ status: status.ARCHIVED })
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ status: status.ARCHIVED }).send();
 
       expect(res).to.have.status(200);
       expect(res.body.activities).to.be.an('array').with.lengthOf(5);
@@ -155,13 +126,7 @@ describe('Cursor Pagination Test', () => {
     it('should return all activities if no status is specified', async () => {
       const allActivities = [...activities, ...openActivities, ...completedActivities, ...archivedActivities];
 
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ limit: 40 })
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ limit: 40 }).send();
 
       console.log('Response body:', res.body);
 
@@ -176,13 +141,7 @@ describe('Cursor Pagination Test', () => {
       });
     });
     it('should return 200 with default parameters (limit = 3', async () => {
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ limit: 3 })
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ limit: 3 }).send();
 
       expect(res).to.have.status(200);
       expect(res.body.activities.length).to.be.at.most(3);
@@ -192,12 +151,7 @@ describe('Cursor Pagination Test', () => {
       const cursor = activities[0]._id.toString();
       const direction = 'next';
 
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ cursor, limit, direction });
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ cursor, limit, direction });
 
       expect(res).to.have.status(200);
       expect(res.body).to.have.property('activities').that.is.an('array').with.lengthOf(limit);
@@ -215,12 +169,7 @@ describe('Cursor Pagination Test', () => {
       const cursor = activities[activities.length - limit]._id.toString();
       const direction = 'prev';
 
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .query({ cursor, limit, direction });
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ cursor, limit, direction });
 
       expect(res).to.have.status(200);
       expect(res.body).to.have.property('activities').that.is.an('array').with.lengthOf(limit);
@@ -235,13 +184,7 @@ describe('Cursor Pagination Test', () => {
   it('should return 200 with second page of activities (limit = 5, direction = next)', async () => {
     const openActivities = await ActivityTestUtils.addManyTestActivities(testUser._id, 10, status.OPEN);
 
-    const firstRes = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ limit: 5 })
-      .send();
+    const firstRes = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ limit: 5 }).send();
 
     expect(firstRes).to.have.status(200);
     expect(firstRes.body.activities.length).to.be.at.most(5);
@@ -251,13 +194,7 @@ describe('Cursor Pagination Test', () => {
     const nextCursor = firstRes.body.nextCursor;
     expect(nextCursor).to.eq(firstPageActivities[firstPageActivities.length - 1].id.toString());
 
-    const secondRes = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ limit: 5, cursor: nextCursor, direction: 'next' })
-      .send();
+    const secondRes = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ limit: 5, cursor: nextCursor, direction: 'next' }).send();
 
     expect(secondRes).to.have.status(200);
     expect(secondRes.body.activities.length).to.be.at.most(5);
@@ -282,90 +219,57 @@ describe('Cursor Pagination Test', () => {
   describe('GET/activities with cursor - fail', () => {
     it('should return 401 if token is invalid', async () => {
       const invalidToken = 'Bearer invalid_token';
-      const res = await request
-        .execute(app)
-        .get(route)
-        .set('Authorization', `Bearer ${invalidToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).get(route).set('Authorization', `Bearer ${invalidToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(401);
     });
+  });
+  it('should return 404 if not activities found', async () => {
+    await ActivityTestUtils.restore();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query().send();
+
+    expect(res).to.have.status(404);
+    expect(res.body.message).to.equal('Activities not found');
   });
   it('should return 404 if no previous activities exist', async () => {
     const limit = 5;
     const cursor = activities[0]._id.toString();
     const direction = 'prev';
 
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ cursor, limit, direction });
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ cursor, limit, direction });
 
     expect(res).to.have.status(404);
-    expect(res.body.message).to.equal('No activities found');
+    expect(res.body.message).to.equal('Activities not found');
     expect(res.body).to.not.have.property('activities');
   });
   it('should return 400 if cursor is invalid', async () => {
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ cursor: 'not-objectID' })
-      .send();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ cursor: 'not-objectID' }).send();
 
     expect(res).to.have.status(400);
   });
   it('should return 400 if limit is invalid', async () => {
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ limit: 'not a number' })
-      .send();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ limit: 'not a number' }).send();
 
     expect(res).to.have.status(400);
   });
   it('should return 400 if direction is invalid', async () => {
     const invalidDirection = 'invalid_direction';
 
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ direction: invalidDirection })
-      .send();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ direction: invalidDirection }).send();
 
     expect(res).to.have.status(400);
   });
   it('should return 400 if status is invalid', async () => {
     const invalidStatus = 'invalid_status';
 
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ status: invalidStatus })
-      .send();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ status: invalidStatus }).send();
 
     expect(res).to.have.status(400);
   });
   it('should return 400 if status array contains invalid value', async () => {
     const invalidStatusArray = ['open', 'invalid_status'];
 
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .query({ status: invalidStatusArray })
-      .send();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').query({ status: invalidStatusArray }).send();
 
     expect(res).to.have.status(400);
   });
@@ -373,12 +277,7 @@ describe('Cursor Pagination Test', () => {
     const anotherUser = await ActivityTestUtils.createAnotherTestUser();
     const anotherAccessToken = cryptoUtils.generateToken({ _id: anotherUser._id }, 10000);
 
-    const res = await request
-      .execute(app)
-      .get(route)
-      .set('Authorization', `Bearer ${anotherAccessToken}`)
-      .set('Content-Type', 'application/json')
-      .send();
+    const res = await request.execute(app).get(route).set('Authorization', `Bearer ${anotherAccessToken}`).set('Content-Type', 'application/json').send();
 
     expect(res).to.have.status(404);
   });

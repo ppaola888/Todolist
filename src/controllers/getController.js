@@ -5,9 +5,6 @@ const get = async (req, res) => {
   const userId = req.userId;
   try {
     const activity = await activityService.getActivity(activityId, userId);
-    if (!activity) {
-      return res.status(404).json({ message: 'Activity not found' });
-    }
     res.status(200).json(activity);
   } catch (error) {
     return res.status(error.status).json({ message: error.message });

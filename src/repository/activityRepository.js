@@ -23,6 +23,7 @@ class ActivityRepository {
       .skip(skip)
       .limit(limit)
       .catch((error) => {
+        console.log(error);
         throw new MongoInternalException('Error on getting activities', 'ActivityRepository.getActivities');
       });
     if (activities.length === 0) {
@@ -47,16 +48,17 @@ class ActivityRepository {
 
     const query = { ...filter, ...cursorQuery };
 
-    try {
-      const activitiesResult = await activitySchema.find(query).sort({ _id: 1 }).limit(limit);
-
-      return activitiesResult;
-    } catch (error) {
-      throw new MongoInternalException(
-        'Error on getting activities by cursor',
-        'ActivityRepository.getActivitiesByCursor'
-      );
+    const activitiesResult = await activitySchema
+      .find(query)
+      .sort({ _id: 1 })
+      .limit(limit)
+      .catch((error) => {
+        throw new MongoInternalException('Error on getting activities by cursor', 'ActivityRepository.getActivitiesByCursor');
+      });
+    if (activitiesResult.length === 0) {
+      throw new NotFoundException('Activities not found', 'ActivityRepository.getActivitiesByCursor');
     }
+    return activitiesResult;
   }
 
   async getActivity(activityId, userId) {
@@ -85,15 +87,9 @@ class ActivityRepository {
   }
 
   async completeActivity(id, userId) {
-    const activity = await activitySchema
-      .findOneAndUpdate(
-        { _id: id, userId: userId, status: { $in: [status.OPEN, status.COMPLETED] } },
-        { $set: { status: status.COMPLETED } },
-        { new: true }
-      )
-      .catch((error) => {
-        throw new MongoInternalException('Error on updating activity', 'ActivityRepository.updateActivity');
-      });
+    const activity = await activitySchema.findOneAndUpdate({ _id: id, userId: userId, status: { $in: [status.OPEN, status.COMPLETED] } }, { $set: { status: status.COMPLETED } }, { new: true }).catch((error) => {
+      throw new MongoInternalException('Error on updating activity', 'ActivityRepository.updateActivity');
+    });
 
     if (!activity) {
       throw new NotFoundException('Activity not found or not updated', 'ActivityRepository.updateActivity');
@@ -102,15 +98,9 @@ class ActivityRepository {
   }
 
   async reopenActivity(id, userId) {
-    const activity = await activitySchema
-      .findOneAndUpdate(
-        { _id: id, userId: userId, status: status.COMPLETED },
-        { $set: { status: status.OPEN } },
-        { new: true }
-      )
-      .catch((error) => {
-        throw new MongoInternalException('Error on reopen activity', 'ActivityRepository.reopenActivity');
-      });
+    const activity = await activitySchema.findOneAndUpdate({ _id: id, userId: userId, status: status.COMPLETED }, { $set: { status: status.OPEN } }, { new: true }).catch((error) => {
+      throw new MongoInternalException('Error on reopen activity', 'ActivityRepository.reopenActivity');
+    });
 
     if (!activity) {
       throw new NotFoundException('Activity not found or cannot be reopen', 'ActivityRepository.reopenActivity');
@@ -119,15 +109,9 @@ class ActivityRepository {
   }
 
   async archiveActivity(id, userId) {
-    const activity = await activitySchema
-      .findOneAndUpdate(
-        { _id: id, userId, status: status.COMPLETED },
-        { $set: { status: status.ARCHIVED } },
-        { new: true }
-      )
-      .catch((error) => {
-        throw new MongoInternalException('Error on archiving activity', 'ActivityRepository.archiveActivity');
-      });
+    const activity = await activitySchema.findOneAndUpdate({ _id: id, userId, status: status.COMPLETED }, { $set: { status: status.ARCHIVED } }, { new: true }).catch((error) => {
+      throw new MongoInternalException('Error on archiving activity', 'ActivityRepository.archiveActivity');
+    });
 
     if (!activity) {
       throw new NotFoundException('Activity not found or cannot be archived', 'ActivityRepository.archiveActivity');

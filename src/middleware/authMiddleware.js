@@ -6,17 +6,13 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ message: 'Authentication error' });
   }
   const token = authorization.split(' ')[1];
-  console.log(token);
-  try {
-    const decoded = cryptoUtils.verifyJWT(token);
-    if (!decoded) {
-      return res.status(401).json({ message: 'Authentication error' });
-    }
-    req.userId = decoded.sub;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: `Authentication error: ${error.message}` });
+
+  const decoded = cryptoUtils.verifyJWT(token);
+  if (!decoded) {
+    return res.status(401).json({ message: 'Authentication error' });
   }
+  req.userId = decoded.sub;
+  next();
 };
 
 export default authMiddleware;

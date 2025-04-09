@@ -1,16 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-//console.log('MAIL_USER:', process.env.MAIL_USER);
-//console.log('MAIL_PASSWORD:', process.env.MAIL_PASS);
-
 const config = {
   dbFile: 'activity.db',
   host: 'localhost',
-  port: 8000,
+  port: process.env.PORT || 8000,
   db: {
-    connectionString:
-      process.env.MONGODB_URI || 'mongodb+srv://peruzzipaola84:RMgJ4uiib0gBF4x1@cluster0.eokvx.mongodb.net/todolist',
+    connectionString: process.env.MONGODB_URI,
     //host: "localhost",
     //port: 27017,
     //name: "todolist",

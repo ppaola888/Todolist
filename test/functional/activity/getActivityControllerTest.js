@@ -28,11 +28,7 @@ describe('GET Activity By Id', () => {
   });
   describe('GET /:id - success', () => {
     it('should return 200 and the activity', async () => {
-      const res = await request
-        .execute(app)
-        .get(route.replace(':id', activityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .send();
+      const res = await request.execute(app).get(route.replace(':id', activityId)).set('Authorization', `Bearer ${accessToken}`).send();
 
       expect(res).to.have.status(200);
       expect(res.body.status).to.equal(status.OPEN);
@@ -56,24 +52,14 @@ describe('GET Activity By Id', () => {
     it('should return 401 if token is invalid', async () => {
       const invalidToken = 'invalid_token';
 
-      const res = await request
-        .execute(app)
-        .get(route.replace(':id', activityId))
-        .set('Authorization', `Bearer ${invalidToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).get(route.replace(':id', activityId)).set('Authorization', `Bearer ${invalidToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(401);
     });
     it('should return 400 if activity Id is invalid', async () => {
       const invalidActivityId = 'Invalid activity_id';
 
-      const res = await request
-        .execute(app)
-        .get(route.replace(':id', invalidActivityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).get(route.replace(':id', invalidActivityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(400);
     });
@@ -81,12 +67,7 @@ describe('GET Activity By Id', () => {
       const anotherUser = await ActivityTestUtils.createAnotherTestUser();
       const anotherAccessToken = cryptoUtils.generateToken({ _id: anotherUser._id }, 10000);
 
-      const res = await request
-        .execute(app)
-        .get(route.replace(':id', activityId))
-        .set('Authorization', `Bearer ${anotherAccessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).get(route.replace(':id', activityId)).set('Authorization', `Bearer ${anotherAccessToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(404);
       expect(res.body.message).eq('Activity not found');
@@ -94,12 +75,7 @@ describe('GET Activity By Id', () => {
     it('should return 404 if activity not found', async () => {
       const fakeActivity = new mongoose.Types.ObjectId().toString();
 
-      const res = await request
-        .execute(app)
-        .get(route.replace(':id', fakeActivity))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).get(route.replace(':id', fakeActivity)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(404);
       expect(res.body.message).eq('Activity not found');

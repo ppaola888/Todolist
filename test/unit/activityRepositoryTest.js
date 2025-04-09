@@ -1,15 +1,13 @@
-import { expect } from 'chai';
 import * as chai from 'chai';
-import activityRepository from '../../src/repository/activityRepository.js';
-import { status } from '../../src/const/constant.js';
-import sinon from 'sinon';
-import activitySchema from '../../src/schema/todoListSchema.js';
-import mongoose from 'mongoose';
-import NotFoundException from '../../src/exceptions/NotFoundException.js';
-import UnauthorizedException from '../../src/exceptions/UnauthorizedException.js';
-import MongoInternalException from '../../src/exceptions/MongoInternalException.js';
-import ForbiddenException from '../../src/exceptions/ForbiddenException.js';
+import { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import mongoose from 'mongoose';
+import sinon from 'sinon';
+import { status } from '../../src/const/constant.js';
+import MongoInternalException from '../../src/exceptions/MongoInternalException.js';
+import NotFoundException from '../../src/exceptions/NotFoundException.js';
+import activityRepository from '../../src/repository/activityRepository.js';
+import activitySchema from '../../src/schema/todoListSchema.js';
 
 chai.use(chaiAsPromised);
 
@@ -25,10 +23,19 @@ describe('Activity Repository Test', () => {
       const activityId = new mongoose.Types.ObjectId();
       const userId = new mongoose.Types.ObjectId().toString();
 
-      const stub = sandbox.stub(activitySchema, 'findOneAndUpdate').callsFake(() => {
-        return { status: status.COMPLETED, _id: activityId };
-      });
-      const activity = await activityRepository.completeActivity(activityId, userId);
+      const fakeActivity = {
+        _id: activityId,
+        userId: userId,
+        name: 'Test activity',
+        description: 'Description test',
+        dueDate: new Date(),
+        status: status.COMPLETED,
+      };
+
+      const stub = sandbox.stub(activitySchema, 'findOneAndUpdate').resolves(fakeActivity); //callsFake(() => {
+      //return { status: status.COMPLETED, _id: activityId };
+      //});
+      const activity = await activityRepository.completeActivity(activityId.toString(), userId);
       expect(activity.status).eq(status.COMPLETED);
       expect(stub.calledOnce).to.be.true;
     });
@@ -132,8 +139,7 @@ describe('Activity Repository Test', () => {
       expect(activity.description).eq(data.description);
       expect(activity.dueDate.toISOString()).eq(data.dueDate.toISOString());
 
-      expect(stub.calledOnceWithExactly({ _id: activityId, userId: userId }, data, { upsert: false, new: true })).to.be
-        .true;
+      expect(stub.calledOnceWithExactly({ _id: activityId, userId: userId }, data, { upsert: false, new: true })).to.be.true;
 
       expect(stub.calledOnce).to.be.true;
     });

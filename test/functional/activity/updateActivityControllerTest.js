@@ -32,12 +32,7 @@ describe('Update Activity Controller test', () => {
         description: 'Description test activity updated',
       };
 
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', activityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send(updatedData);
+      const res = await request.execute(app).patch(route.replace(':id', activityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send(updatedData);
 
       expect(res).to.have.status(200);
       expect(res.body.status).to.equal(status.OPEN);
@@ -57,12 +52,7 @@ describe('Update Activity Controller test', () => {
     const updatedData = {
       dueDate: new Date().getTime(),
     };
-    const res = await request
-      .execute(app)
-      .patch(route.replace(':id', activityId))
-      .set('Authorization', `Bearer ${accessToken}`)
-      .set('Content-Type', 'application/json')
-      .send(updatedData);
+    const res = await request.execute(app).patch(route.replace(':id', activityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send(updatedData);
 
     expect(res).to.have.status(200);
     expect(res.body.id).to.equal(activityId);
@@ -75,44 +65,29 @@ describe('Update Activity Controller test', () => {
   describe('PATCH/:id/update fail', () => {
     it('should return 401 if token is invalid', async () => {
       const invalidToken = 'Bearer invalid_token';
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', activityId))
-        .set('Authorization', `Bearer ${invalidToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+
+      const res = await request.execute(app).patch(route.replace(':id', activityId)).set('Authorization', `Bearer ${invalidToken}`).set('Content-Type', 'application/json').send();
+      expect(res).to.have.status(401);
+    });
+    it('should return 401 if on missing authorization header', async () => {
+      const res = await request.execute(app).patch(route.replace(':id', activityId)).set('Content-Type', 'application/json').send();
       expect(res).to.have.status(401);
     });
     it('should return 400 if activity id is invalid', async () => {
       const invalidActivityId = 'invalid_id';
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', invalidActivityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).patch(route.replace(':id', invalidActivityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send();
       expect(res).to.have.status(400);
     });
     it('should return 400 if name < 3', async () => {
       const invalidActivityId = 'invalid_id';
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', invalidActivityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send({ name: 'cc' });
+      const res = await request.execute(app).patch(route.replace(':id', invalidActivityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send({ name: 'cc' });
 
       expect(res).to.have.status(400);
       expect(res.body.message).to.equal('ValidationError: "name" length must be at least 3 characters long');
     });
     it('should return 400 if description < 3', async () => {
       const invalidActivityId = 'invalid_id';
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', invalidActivityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send({ description: 'cc' });
+      const res = await request.execute(app).patch(route.replace(':id', invalidActivityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send({ description: 'cc' });
 
       expect(res).to.have.status(400);
     });
@@ -130,12 +105,7 @@ describe('Update Activity Controller test', () => {
     it('should return 404 if the activity is not found', async () => {
       const notFoundActivityId = new mongoose.Types.ObjectId().toString();
 
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', notFoundActivityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).patch(route.replace(':id', notFoundActivityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(404);
       expect(res.body.message).to.equal('Activity not found or not updated');
@@ -143,12 +113,7 @@ describe('Update Activity Controller test', () => {
     it('should return 404 if user is not owner', async () => {
       const fakeActivityId = new mongoose.Types.ObjectId().toString();
 
-      const res = await request
-        .execute(app)
-        .patch(route.replace(':id', fakeActivityId))
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Content-Type', 'application/json')
-        .send();
+      const res = await request.execute(app).patch(route.replace(':id', fakeActivityId)).set('Authorization', `Bearer ${accessToken}`).set('Content-Type', 'application/json').send();
 
       expect(res).to.have.status(404);
     });
