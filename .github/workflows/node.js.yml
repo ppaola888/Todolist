@@ -35,5 +35,9 @@ jobs:
         echo "DB_NAME=todolist_test" >> .env.test
         echo "JWT_PRIVATE_KEY_TEST=${{ secrets.JWT_PRIVATE_KEY_TEST }}" >> .env.test
         echo "JWT_PUBLIC_KEY_TEST=${{ secrets.JWT_PUBLIC_KEY_TEST }}" >> .env.test
+        
+    - name: Check if .env.test exists
+      run: ls -la
+      
     - name: Run tests
-      run: npx mocha 'test/**/*.js' --recursive --exit
+      run: NODE_ENV=test npm test
