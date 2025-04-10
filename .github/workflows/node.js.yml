@@ -32,5 +32,9 @@ jobs:
     - name: Check if .env.test exists
       run: cat .env.test 
       
+    - name: Set environment variables
+      run: |
+        echo "JWT_PRIVATE_KEY_TEST=${{ secrets.JWT_PRIVATE_KEY_TEST }}" >> $GITHUB_ENV
+      
     - name: Run tests
       run: npm test
