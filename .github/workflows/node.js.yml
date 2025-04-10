@@ -29,15 +29,20 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
 
-    - name: Set environment variables
+    - name: Load environment variables from .env.test
       run: |
-        echo "JWT_PRIVATE_KEY_TEST=${{ secrets.JWT_PRIVATE_KEY_TEST }}" >> $GITHUB_ENV
-    - name: Test JWT_PRIVATE_KEY_TEST
+        if [ -f .env.test ]; then
+          echo "Loading .env.test"
+          set -o allexport
+          source .env.test
+          set +o allexport
+        else
+          echo ".env.test not found!"
+        fi
+
+    - name: Check if JWT_PRIVATE_KEY_TEST is set
       run: |
-        echo "Length of JWT_PRIVATE_KEY_TEST: $(echo -n $JWT_PRIVATE_KEY_TEST | wc -c)"
-    
-    - name: Check if .env.test exists
-      run: cat .env.test 
+        echo "JWT_PRIVATE_KEY_TEST is set: $JWT_PRIVATE_KEY_TEST"
       
       
     - name: Run tests
