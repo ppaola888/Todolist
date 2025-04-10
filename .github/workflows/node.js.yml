@@ -32,6 +32,9 @@ jobs:
     - name: Set environment variables
       run: |
         echo "JWT_PRIVATE_KEY_TEST=${{ secrets.JWT_PRIVATE_KEY_TEST }}" >> $GITHUB_ENV
+    - name: Test JWT_PRIVATE_KEY_TEST
+      run: |
+        echo "Length of JWT_PRIVATE_KEY_TEST: $(echo -n $JWT_PRIVATE_KEY_TEST | wc -c)"
     
     - name: Check if .env.test exists
       run: cat .env.test 
