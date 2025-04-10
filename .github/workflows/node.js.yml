@@ -37,7 +37,9 @@ jobs:
       run: |
         if [ -f .env.test ]; then
           echo "Loading variables from .env.test"
-          export $(grep -v '^#' .env.test | xargs)
+          set -a
+          source .env.test
+          set +a
         else
           echo ".env.test file not found"
         fi
