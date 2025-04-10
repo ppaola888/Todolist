@@ -27,13 +27,17 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
 
-    - name: Load .env.test
+    - name: Load environment variables from .env.test
       run: |
-        echo "JWT_PRIVATE_KEY_TEST=${{ secrets.JWT_PRIVATE_KEY_TEST }}" >> $GITHUB_ENV
-        echo "JWT_PUBLIC_KEY_TEST=${{ secrets.JWT_PUBLIC_KEY_TEST }}" >> $GITHUB_ENV
-        echo "NODE_ENV=test" >> $GITHUB_ENV
+        if [ -f .env.test ]; then
+          echo "Loading variables from .env.test"
+          export $(grep -v '^#' .env.test | xargs)
+        else
+          echo ".env.test file not found"
+        fi
+    - name: Run build
+    - run: npm run build --if-present
       
       
     - name: Run tests
