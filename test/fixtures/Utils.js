@@ -36,7 +36,10 @@ class ActivityTestUtils {
       userId: userId,
       registrationToken: activationToken,
     });
-    return await token.save();
+    await token.save();
+    return {
+      registrationToken: activationToken,
+    };
   }
 
   async getUserById(userId) {
