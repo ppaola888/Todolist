@@ -1,88 +1,123 @@
-import config from "../../config/config.js";
-import fs from "fs";
-import checkDb from "../utils/checkDb.js";
-import getReadlineInterface from "../utils/readLine.js";
-const dbFile = config.dbFile;
+import { status } from '../const/constant.js';
+import MongoInternalException from '../exceptions/MongoInternalException.js';
+import NotFoundException from '../exceptions/NotFoundException.js';
+import Activity from '../models/Activity.js';
+import activitySchema from '../schema/todoListSchema.js';
 
-const add = (data) => {
-  try {
-    fs.appendFileSync(dbFile, JSON.stringify(data) + "\n");
-    return data;
-  } catch (error) {
-    console.error("Error on adding activity:", error.message);
-    return null;
-  }
-};
-
-const getActivities = () => {
-  if (!checkDb()) {
-    return null;
-  }
-  const content = fs.readFileSync(dbFile);
-  const activities = content
-    .toString()
-    .trim()
-    .split("\n")
-    .map((item) => JSON.parse(item));
-  return activities;
-};
-
-const getActivity = async (id) => {
-  if (!checkDb()) {
-    return null;
-  }
-  try {
-    return await new Promise((resolve, reject) => {
-      const readlineInterface = getReadlineInterface();
-
-      readlineInterface.on("line", (line) => {
-        const activity = lineHandler(line, id, (activity) => {
-          resolve(activity);
-        });
-      });
-      readlineInterface.on("close", () => {
-        return reject(new Error("not found"));
-      });
+class ActivityRepository {
+  constructor() {}
+  async add(data) {
+    const activity = await activitySchema.create(data).catch((error) => {
+      throw new MongoInternalException('Error on adding activity:', 'ActivityRepository.add');
     });
-  } catch (e) {
-    console.error("Error reatriving activity:", e.message);
-    return null;
+    return new Activity(activity);
   }
-};
 
-const updateActivity = async (id, data) => {
-  if (!checkDb()) {
-    return null;
+  async getActivities(userId, skip, limit, status) {
+    const activities = await activitySchema
+      .find({
+        userId,
+        status,
+      })
+      //.sort({ created_at: -1 })
+      .skip(skip)
+      .limit(limit)
+      .catch((error) => {
+        console.log(error);
+        throw new MongoInternalException('Error on getting activities', 'ActivityRepository.getActivities');
+      });
+    if (activities.length === 0) {
+      throw new NotFoundException('Activities not found', 'ActivityRepository.getActivities');
+    }
+    return activities.map((activity) => new Activity(activity));
   }
-  try {
-    return await new Promise((resolve, reject) => {
-      const readlineInterface = getReadlineInterface();
 
-      const activities = [];
-      let updatedActivity;
+  async getActivitiesByCursor(userId, cursor, limit, direction, status) {
+    const filter = {
+      userId,
+      ...(status ? { status } : { status: { $ne: 'deleted' } }),
+    };
 
-      readlineInterface.on("line", (line) => {
-        const activity = lineHandler(line, id, (activity) => {
-          Object.keys(data).forEach((key) => {
-            activity[key] = data[key];
-          });
-          return (updatedActivity = { ...activity });
-        });
-        activities.push(JSON.stringify(activity));
+    let cursorQuery = {};
+
+    if (cursor) {
+      cursorQuery = {
+        _id: direction === 'next' ? { $gt: cursor } : { $lt: cursor },
+      };
+    }
+
+    const query = { ...filter, ...cursorQuery };
+
+    const activitiesResult = await activitySchema
+      .find(query)
+      .sort({ _id: 1 })
+      .limit(limit)
+      .catch((error) => {
+        throw new MongoInternalException('Error on getting activities by cursor', 'ActivityRepository.getActivitiesByCursor');
       });
-      readlineInterface.on("close", () => {
-        fs.writeFile(dbFile, activities.join("\n"), (error) => {
-          if (error) {
-            reject(null);
-          }
-          resolve(updatedActivity);
-        });
-      });
+    if (activitiesResult.length === 0) {
+      throw new NotFoundException('Activities not found', 'ActivityRepository.getActivitiesByCursor');
+    }
+    return activitiesResult;
+  }
+
+  async getActivity(activityId, userId) {
+    const activity = await activitySchema.findOne({ _id: activityId, userId }).catch((error) => {
+      throw new MongoInternalException('Error on getting activity:', 'ActivityRepository.getActivity');
     });
-  } catch (e) {
-    console.error("Error updating activity:", e.message);
-    return null;
+    if (!activity) {
+      throw new NotFoundException('Activity not found', 'ActivityRepository.getActivity');
+    }
+    return new Activity(activity);
   }
-};
 
-export default { add, getActivities, getActivity, updateActivity };
+  async updateActivity(id, userId, data) {
+    const activity = await activitySchema
+      .findOneAndUpdate({ _id: id, userId }, data, {
+        upsert: false,
+        new: true,
+      })
+      .catch((error) => {
+        throw new MongoInternalException('Error on updating activity:', 'ActivityRepository.updateActivity');
+      });
+    if (!activity) {
+      throw new NotFoundException('Activity not found or not updated', 'ActivityRepository.updateActivity');
+    }
+    return new Activity(activity);
+  }
+
+  async completeActivity(id, userId) {
+    const activity = await activitySchema.findOneAndUpdate({ _id: id, userId: userId, status: { $in: [status.OPEN, status.COMPLETED] } }, { $set: { status: status.COMPLETED } }, { new: true }).catch((error) => {
+      throw new MongoInternalException('Error on updating activity', 'ActivityRepository.updateActivity');
+    });
+
+    if (!activity) {
+      throw new NotFoundException('Activity not found or not updated', 'ActivityRepository.updateActivity');
+    }
+    return new Activity(activity);
+  }
+
+  async reopenActivity(id, userId) {
+    const activity = await activitySchema.findOneAndUpdate({ _id: id, userId: userId, status: status.COMPLETED }, { $set: { status: status.OPEN } }, { new: true }).catch((error) => {
+      throw new MongoInternalException('Error on reopen activity', 'ActivityRepository.reopenActivity');
+    });
+
+    if (!activity) {
+      throw new NotFoundException('Activity not found or cannot be reopen', 'ActivityRepository.reopenActivity');
+    }
+    return new Activity(activity);
+  }
+
+  async archiveActivity(id, userId) {
+    const activity = await activitySchema.findOneAndUpdate({ _id: id, userId, status: status.COMPLETED }, { $set: { status: status.ARCHIVED } }, { new: true }).catch((error) => {
+      throw new MongoInternalException('Error on archiving activity', 'ActivityRepository.archiveActivity');
+    });
+
+    if (!activity) {
+      throw new NotFoundException('Activity not found or cannot be archived', 'ActivityRepository.archiveActivity');
+    }
+    return new Activity(activity);
+  }
+}
+
+export default new ActivityRepository();

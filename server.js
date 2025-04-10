@@ -1,8 +1,8 @@
-import config from "./config/config.js";
-import express from "express";
-import connectDB from "./src/gataway/db.js";
-import dotenv from "dotenv";
-import setup from "./src/routes/activityRoutes.js";
+import dotenv from 'dotenv';
+import config from './config/config.js';
+import express from 'express';
+import connectDB from './src/gateway/db.js';
+import setup from './src/routes/activityRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +16,8 @@ try {
     console.log(`Server running on http://${config.host}:${config.port}`);
   });
 } catch (error) {
-  console.log("Server not started", error.message);
+  console.log('Server not started', error.message);
   process.exit();
 }
+
+export default app;

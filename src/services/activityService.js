@@ -1,52 +1,49 @@
-import config from "../../config/config.js";
-import fs from "fs";
-import checkDb from "../utils/checkDb.js";
-import getReadlineInterface from "../utils/readLine.js";
-import activityRepository from "../src/repository/activityRepository.js";
-const dbFile = config.dbFile;
+import ActivityRepository from '../repository/activityRepository.js';
 
-const createId = () => {
-  if (!checkDb()) {
-    fs.openSync(dbFile, "w");
-    //return 1;
-  }
-  const content = fs.readFileSync(dbFile);
-  const activities = content.toString().split("\n");
-
-  const last = activities[activities.length - 2];
-  if (last && last !== "") {
-    return JSON.parse(last).id + 1;
-  }
-  return 1;
+const addActivity = async (data) => {
+  return await ActivityRepository.add(data);
 };
 
-const addActivity = (data) => {
-  data.status = "open";
-  data.createdAt = new Date().getTime();
-  data.updatedAt = data.createdAt;
-  data.id = createId();
-
-  return activityRepository.add(data);
+const getActivities = async (userId, skip, limit, status) => {
+  return await ActivityRepository.getActivities(userId, skip, limit, status);
 };
 
-const getActivities = () => {
-  return activityRepository.getActivities();
+const getActivitiesByCursor = async (userId, cursor, limit, direction, status) => {
+  return await ActivityRepository.getActivitiesByCursor(userId, cursor, limit, direction, status);
 };
 
-const getActivity = async (id) => {
-  return await activityRepository.getActivity(id);
+const getActivity = async (id, userId) => {
+  return await ActivityRepository.getActivity(id, userId);
 };
 
-const updateActivity = async (id, data) => {
-  return await activityRepository.updateActivity(id, data);
+const updateActivity = async (id, userId, data) => {
+  return await ActivityRepository.updateActivity(id, userId, data);
 };
 
-const lineHandler = (line, id, cb) => {
-  const activity = JSON.parse(line);
-  if (activity.id == id) {
-    return cb(activity);
-  }
-  return activity;
+const deleteActivity = async (id, userId) => {
+  return await ActivityRepository.updateActivity(id, userId, { status: 'deleted' });
 };
 
-export default { addActivity, getActivities, getActivity, updateActivity };
+const completeActivity = async (id, userId) => {
+  return await ActivityRepository.completeActivity(id, userId);
+};
+
+const reopenActivity = async (id, userId) => {
+  return await ActivityRepository.reopenActivity(id, userId);
+};
+
+const archiveActivity = async (id, userId) => {
+  return await ActivityRepository.archiveActivity(id, userId);
+};
+
+export default {
+  addActivity,
+  getActivities,
+  getActivitiesByCursor,
+  getActivity,
+  updateActivity,
+  deleteActivity,
+  completeActivity,
+  reopenActivity,
+  archiveActivity,
+};

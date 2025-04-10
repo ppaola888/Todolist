@@ -1,13 +1,13 @@
-import activityService from "../services/activityService.js";
+import activityService from '../services/activityService.js';
 
 const remove = async (req, res) => {
   const activityId = req.params.id;
-  const data = { status: "deleted" };
-  const activity = await activityService.updateActivity(activityId, data);
-  if (activity) {
+  const userId = req.userId;
+  try {
+    const activity = await activityService.deleteActivity(activityId, userId);
     res.status(200).json(activity);
-  } else {
-    res.status(500).json({ message: "Server error" });
+  } catch (error) {
+    res.status(error.status).json({ message: error.message });
   }
 };
 
