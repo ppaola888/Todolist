@@ -3,4 +3,5 @@ node_modules/
 todolistRS256.key
 todolistRS256-key.pub
 coverage/
+.env.production
 
