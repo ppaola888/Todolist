@@ -1,10 +1,9 @@
+import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import config from '../../config/config.js';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import dotenv from 'dotenv';
 
 dotenv.config();
-
 //const db = process.env.MONGODB_URI; || mongodb://${config.db.host}:${config.db.port}/${config.db.name}
 
 const connectDB = async () => {
@@ -14,6 +13,7 @@ const connectDB = async () => {
       await mongoose.connect(memoryServer.getUri(), { dbName: 'todolist' });
       console.log('Connected to MongoDb in-memory');
     } else {
+      console.log('Connection string: ', config.db.connectionString);
       await mongoose.connect(config.db.connectionString);
       console.log('Connected to Mongo Atlas');
     }

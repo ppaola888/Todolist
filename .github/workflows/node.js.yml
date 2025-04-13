@@ -47,3 +47,6 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Deploy to server
+        run: ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@${secrets.SERVER} "/user/local/repo/Todolist/devops/deploy.sh production"
