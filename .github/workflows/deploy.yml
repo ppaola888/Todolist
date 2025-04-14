@@ -1,0 +1,43 @@
+Deploy.yml name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2 Instance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: Deploy via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_HOST}} << 'EOF'
+            cd /usr/local/repo/Todolist
+
+            echo "Loading environment variables from .env.production."
+            source .env.production
+
+           
+            git stash
+            git fetch
+            git checkout main
+            git pull origin main
+
+            npm install
+
+            pm2 delete todolist || true
+
+            NODE_ENV=production pm2 start ecosystem.config.cjs
+
+              echo "Deploy complete!"
+          EOF
