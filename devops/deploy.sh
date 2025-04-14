@@ -12,4 +12,4 @@ if [[ $? -ne 0 ]]; then
 fi
 pm2 delete todolist;
 
-NODE_ENV=$1 pm2 start ecosystem.config.cjs
+pm2 start ecosystem.config.cjs --env production
