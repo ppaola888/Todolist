@@ -22,22 +22,9 @@ jobs:
       - name: Deploy via SSH
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_HOST}} << 'EOF'
-            cd /usr/local/repo/Todolist
+            chmod +x /usr/local/repo/Todolist/devops/deploy.sh
+            /usr/local/repo/Todolist/deploy.sh
 
-            echo "Loading environment variables from .env.production."
-            source .env.production
 
-           
-            git stash
-            git fetch
-            git checkout main
-            git pull origin main
-
-            npm install
-
-            pm2 delete todolist || true
-
-            pm2 start ecosystem.config.cjs --env production 
-
-              echo "Deploy complete!"
+            echo "Deploy script executed successfully."
           EOF
