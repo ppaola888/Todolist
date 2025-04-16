@@ -9,6 +9,7 @@ jobs:
   deploy:
     name: Deploy to EC2 Instance
     runs-on: ubuntu-latest
+    environment: development
 
     steps:
       - name: Checkout repository
@@ -23,7 +24,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_HOST}} << 'EOF'
             chmod +x /usr/local/repo/Todolist/devops/deploy.sh
-            /usr/local/repo/Todolist/deploy.sh
+            /usr/local/repo/Todolist/deploy.sh production
 
 
             echo "Deploy script executed successfully."
