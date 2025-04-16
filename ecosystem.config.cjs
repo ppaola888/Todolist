@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'todolist',
       script: './server.js',
-      instances: 2,
+      instances: 1,
       exec_mode: 'cluster',
       watch: true,
       ignore_watch: ['node_modules', 'logs'],
