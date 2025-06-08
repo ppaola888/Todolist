@@ -1,7 +1,7 @@
 import activityService from '../services/activityService.js';
 
 const addController = async (req, res) => {
-  const data = { ...req.body, userId: req.userId };
+  const data = { ...req.body, userId: req.userId, userIds: req.body.userIds || [] };
   const activity = await activityService.addActivity(data);
   if (activity) {
     res.status(201).json(activity.toJSON());

@@ -1,11 +1,11 @@
+import config from '../../config/config.js';
+import { userStatus } from '../const/constant.js';
+import NotFoundException from '../exceptions/NotFoundException.js';
+import UnauthorizedException from '../exceptions/UnauthorizedException.js';
+import EmailGatewayFactory from '../gateway/EmailGatewayFactory.js';
+import tokenRepository from '../repository/tokenRepository.js';
 import userRepository from '../repository/userRepository.js';
 import cryptoUtils from '../utils/cryptoUtils.js';
-import tokenRepository from '../repository/tokenRepository.js';
-import EmailGatewayFactory from '../gateway/EmailGatewayFactory.js';
-import NotFoundException from '../exceptions/NotFoundException.js';
-import { userStatus } from '../const/constant.js';
-import UnauthorizedException from '../exceptions/UnauthorizedException.js';
-import config from '../../config/config.js';
 
 class UserService {
   constructor() {
@@ -46,6 +46,10 @@ class UserService {
     user.accessToken = accessToken;
     user.refreshToken = refreshToken;
     return { user, accessToken, refreshToken };
+  }
+
+  async getUsersByDisplayName({ text = '', cursor = null, limit = 3, direction = 'next', sortBy = '_id' }) {
+    return await userRepository.findByDisplayName({ text, cursor, limit, direction, sortBy });
   }
 }
 export default new UserService();

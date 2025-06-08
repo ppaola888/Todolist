@@ -1,10 +1,10 @@
 import crypto from 'crypto';
 import cryptoRandomString from 'crypto-random-string';
-import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
+import config from '../../config/config.js';
 
 class CryptoUtils {
-  generateUniqueCode(length, type = 'base64') {
+  generateUniqueCode(length, type = 'url-safe') {
     return cryptoRandomString({ length, type });
   }
 

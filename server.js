@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import config from './config/config.js';
 import express from 'express';
+import config from './config/config.js';
 import connectDB from './src/gateway/db.js';
 import setup from './src/routes/activityRoutes.js';
 
@@ -8,7 +8,6 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-console.log(process.env.MONGODB_URI, config);
 
 try {
   await connectDB();

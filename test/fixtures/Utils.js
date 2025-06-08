@@ -5,17 +5,17 @@ import User from '../../src/schema/userSchema.js';
 import cryptoUtils from '../../src/utils/cryptoUtils.js';
 
 class ActivityTestUtils {
-  async createTestUser(status = userStatus.PENDING) {
-    //const uniqueEmail = `test${Date.now()}@example.com`;
+  async createTestUser(status = userStatus.PENDING, username) {
+    const uniqueEmail = `test${Date.now()}_${Math.floor(Math.random() * 100000)}@example.com`;
     const hashedPassword = cryptoUtils.hashPassword('password123');
     const testUser = new User({
-      email: 'test@example.com',
+      email: uniqueEmail, //'test@example.com',
       password: hashedPassword.password,
       salt: hashedPassword.salt,
       status: status,
+      username,
     });
     await testUser.save();
-    console.log(testUser.toObject());
     return testUser;
   }
 

@@ -42,7 +42,7 @@ describe('Activate User Controller Test', () => {
     expect(res.body).to.have.property('_id').eq(testUser._id.toString());
 
     const updatedUser = await FixtureUtils.getUserById(testUser._id);
-    console.log('Updated user:', updatedUser);
+
     expect(updatedUser).to.have.property('status', userStatus.ACTIVE);
     expect(res.body).to.have.property('_id').eq(testUser._id.toString());
     expect(updatedUser).to.have.property('email', testUser.email);

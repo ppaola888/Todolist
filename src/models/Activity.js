@@ -5,6 +5,8 @@ class Activity {
   #dueDate;
   #status;
   #userId;
+  #userIds;
+
   constructor(activity) {
     this.#id = activity._id.toString();
     this.#name = activity.name;
@@ -12,6 +14,7 @@ class Activity {
     this.#dueDate = activity.dueDate;
     this.#status = activity.status;
     this.#userId = activity.userId;
+    this.#userIds = activity.userIds || [];
   }
   get name() {
     return this.#name;
@@ -32,6 +35,10 @@ class Activity {
     return this.#userId;
   }
 
+  get userIds() {
+    return this.#userIds;
+  }
+
   set userId(userId) {
     this.#userId = userId;
   }
@@ -44,6 +51,7 @@ class Activity {
       dueDate: this.#dueDate,
       status: this.#status,
       userId: this.#userId,
+      userIds: this.#userIds,
     };
   }
 }

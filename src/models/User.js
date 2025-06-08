@@ -4,6 +4,7 @@ class User {
   #password;
   #salt;
   #status;
+  #username;
 
   constructor(user) {
     this.#id = user._id.toString();
@@ -11,6 +12,7 @@ class User {
     this.#password = user.password;
     this.#salt = user.salt;
     this.#status = user.status;
+    this.#username = user.username;
   }
 
   get id() {
@@ -29,13 +31,20 @@ class User {
     return this.#status;
   }
 
+  get username() {
+    return this.#username;
+  }
+
+  set username(username) {
+    this.#username = username;
+  }
+
   toJSON() {
     return {
       id: this.#id,
       email: this.#email,
-      password: this.#password,
-      salt: this.#salt,
       status: this.#status,
+      username: this.#username,
     };
   }
 }
